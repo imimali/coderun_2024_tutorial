@@ -61,3 +61,22 @@ shiny green button that just does everything for us.
 ```shell
 django-admin startproject coderun
 ```
+This will initialize a new project. A project can contain multiple apps. We'll add apps to this project as well. For now, the directory structure
+should look something like: 
+```
+coderun
+├── coderun
+│   ├── asgi.py
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── manage.py
+```
+
+Let's see if it works:
+```shell
+python manage.py runserver
+```
+
+If you see the screen with the rocket, that means you're good to go :rocket:.
