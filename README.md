@@ -80,3 +80,29 @@ python manage.py runserver
 ```
 
 If you see the screen with the rocket, that means you're good to go :rocket:.
+
+Let's create an app now:
+
+```shell
+python manage.py startapp demo
+```
+Now you should see something like this:
+```
+coderun
+├── coderun
+│   ├── asgi.py
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── demo
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
+└── manage.py
+```
