@@ -46,3 +46,18 @@ This will isolate the current Python executable you use for this project only, s
 global one and if you need to install something specific to this project only(with possibly conflicting versions with the system installation, for example)
 then you can do it here only. This is simply good practice. But please *don't* upload this folder to your submissions,
 I don't need it.
+
+## And finally, we'll have Django
+```shell
+pip install Django
+```
+:bulb: pip is the basic Python package manager. It lets you download libraries and frameworks, etc. It's gonna do it in our local installation,
+inside our virtual environment.
+
+The following steps are automatically executed if you create a new Django app from Pycharm, but for clarity of exposition, it's
+good for us to get through each step and to see how we create everything from scratch and not hide behind the big
+shiny green button that just does everything for us.
+
+```shell
+django-admin startproject coderun
+```
