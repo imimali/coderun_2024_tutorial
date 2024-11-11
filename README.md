@@ -263,3 +263,92 @@ and a new template in `user.html`:
 ```
 THe `form.as_p` is a method on the form object passed through the template context,
 which renders the form content as an html `<p>` tag.
+
+This renders the form, now we can validate it, interact with it. But it still crashes on submitting it.
+
+See the final version of [user.html](templates/user.html) and notice the 
+```html
+{% csrf_token %}
+```
+template tag. This is used to prevent cross-site request forgery. You can read more about it [here](https://docs.djangoproject.com/en/3.2/ref/csrf/).
+
+As you can see, the final version of the models.py contains the following class:
+```python
+from django.db import models
+
+# Create your models here.
+
+class User(models.Model):
+    user_name = models.CharField(max_length=20)
+    email = models.EmailField()
+    weight = models.IntegerField()
+    gender = models.CharField(choices=[('male','male'),('male','female')],max_length=10,default='female')
+```
+And since we added the demo app to the installed apps of the project, (which looks like this now):
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'demo' # notice this
+]
+```
+we can tell Django to map our models to the database through its ORM.
+Running 
+```shell
+python manage.py makemigrations
+```
+will populate the migrations folder with some code. Inspect it, study it. This is used by Django to keep track of database schema changes.
+You can also inspect the `DATABASES` variable in `settings.py` to change the database instance.
+
+But this still didn't change anything in our DB.
+```shell
+python manage.py migrate
+```
+Will run the afferent SQL code on your configured DB and actually make, alter or drop the tables
+according to how you modified your code and made your migrations. The default DB vendor is sq lite, but you can
+use anything else from Postgres to MySQL, MariaDB, it has support for all database vendors.
+
+We'll also display our data now in the form, reiterating over it again, it'll look like:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+</head>
+<body>
+<h2>Register now!</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+
+<ul>
+    {% for user in users %}
+        <li>{{ user }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
+```
+As you can see, the list of users displayed is now persisted.
+
+This, however is not all. Models can have references to each other. You can read about how this works [here](https://docs.djangoproject.com/en/5.1/topics/db/models/)
+
+## That's all for this training!
+We learned how to create views, how to route them with proper URL patterns, we covered
+sending data through forms and persisting data in a DB.
+You can always refer to the original [documentation](https://www.djangoproject.com/).
+
+And finally, you can reach out to me in multiple ways.
+[Linkedin](https://www.linkedin.com/in/imre-gergely-mali/)
+[Facebook](https://facebook.com/imi.mali.1)
+[Instagram](https://instagram.com/imimali)
+or here, on Github.
+
