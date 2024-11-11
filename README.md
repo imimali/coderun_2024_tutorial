@@ -1,5 +1,5 @@
 # Django - the fastest hand in the west
-
+![](images/file-gsZddsgkZo8dl59okVHYLSoD.jpg)
 Welcome to the Coderun 2024 Django tutorial. This tutorial is meant to introduce you to the world of web development
 in the context of Django.
 
