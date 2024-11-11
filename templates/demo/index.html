@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Proper Index page</title>
+</head>
+<body>
+<h1>Hello, code runner</h1>
+<div>
+    {% if request.COOKIES %}
+        <h2>I received some cookies</h2>
+    {% else %}
+        <h2> No cookies :(</h2>
+    {% endif %}
+</div>
+<div>
+    <h3>Path: <em>{{ request.path }}</em></h3>
+    <h3>HTTP method: <em>{{ request.method }}</em></h3>
+    <h3>Content-type: <em>{{ request.content_type }}</em></h3>
+</div>
+<div>
+    <h3>Request params</h3>
+    <ul>
+        {% for param,value in request.GET.items %}
+            <li>Param name: <b>{{ param }}</b> and Value: <b>{{ value }}</b></li>
+        {% endfor %}
+    </ul>
+</div>
+
+</body>
+</html>
