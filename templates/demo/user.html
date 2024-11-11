@@ -6,8 +6,17 @@
 </head>
 <body>
 <h2>Register now!</h2>
+
 <form method="post">
+    {% csrf_token %}
     {{ form.as_p }}
+    <button type="submit">Register</button>
 </form>
+
+<ul>
+    {% for user in users %}
+        <li>{{ user }}</li>
+    {% endfor %}
+</ul>
 </body>
 </html>
