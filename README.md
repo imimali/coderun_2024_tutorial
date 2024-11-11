@@ -219,3 +219,47 @@ control statements like ifs and fors, so that you can add dynamic content accord
 passed through the `context` parameter of the rendered view.
 Access your website like http://127.0.0.1:8000/demo/inspect/?a=something&b=yesss and see how the
 URL parameters show up.
+
+## Forms
+We saw how the website can communicate data towards users via views and templates, and saw partially how the user
+can send information via request parameters. We'll explore a method to communicate in a bit more friendly way, without
+requiring our users to know about editing URL parameters. Let's see how forms work.
+
+We'll create a `forms.py` file in the demo folder, and add the following code:
+```python
+from django import forms
+
+
+class UserDataForm(forms.Form):
+    user_name = forms.CharField(label='Name', max_length=20)
+    email = forms.EmailField(label='Email')
+    weight = forms.IntegerField(label='Weight', min_value=0, max_value=300)
+    gender = forms.ChoiceField(label='Gender', choices=[(1,'male'), (2,'female')],widget=forms.RadioSelect())
+```
+It comes handy that we can control the fields and input widgets for the form from Python code,
+it makes form handling a lot easier.
+
+Analogously, we'll add a new view(you should at this point know where):
+```python
+def register_user(request):
+    user_data_form = UserDataForm()
+    return render(request,'demo/user.html',context=dict(form=user_data_form))
+```
+and a new template in `user.html`:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+</head>
+<body>
+<h2>Register now!</h2>
+<form method="post">
+    {{ form.as_p }}
+</form>
+</body>
+</html>
+```
+THe `form.as_p` is a method on the form object passed through the template context,
+which renders the form content as an html `<p>` tag.
