@@ -107,4 +107,115 @@ coderun
 └── manage.py
 ```
 
-## Views
+## Views, routing, URL-s
+Django works with a specific version of the MVC(Model-View-Controller) pattern,
+called MVT(Model-View-Template). Views are classes or functions that handle application logic. They generally receive
+an HTTP request, handle it by possibly interacting with multiple subcomponents, models, etc. and return a response, generally
+either as an HTTP page or as a JSON response. You can have multiple views for multiple use cases, and Django
+decides what view to call based on routing. You'll hear more about routing a bit later.
+
+Consider the following view:
+
+```python
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("<h1 style='background-color:skyblue;display:flex;justify-content:center;'>Hello, code runner.</h1>")
+```
+As you can see, we can return complete HTML code as a string. But that's a bit savage, and not very maintainable. We'll see how to improve on this, but let's
+make this view accessible.
+Add the following code to `demo/urls.py`:
+
+```python
+from .views import index
+from django.urls import path
+
+urlpatterns = [
+    path('index/', index, name='index'),
+]
+```
+Then, the project `views.py` should look like:
+
+```python
+
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('demo/', include('demo.urls')),
+]
+```
+:bulb: Now at http://127.0.0.1:8000/demo/index your view should be accessible. `include` made sure that
+all views defined in `demo/urls.py` are accessible under the demo prefix.
+Exercise: if you simply add another view with another URL to `demo/urls.py`, it should be accessible
+under `/demo/your-view` without modifying the project URL-s file again.
+
+_Why are URL-s important?
+Having a consistent and clear URL pattern scheme is important for multiple reasons. Search Engine Optimisation (SEO) is one big factor. Crawler bots parse your website, and look at your URLs and contents and index your website based on certain rules that favor clear and meaningful URLs over random and meaningless ones. This indexing helps your website show up higher on search pages.
+Consistent, meaningful and well-structured URL-s also help the educated user and make your site easier to navigate, not mentioning the fact that such URL-s will make your
+website seem a lot more trustworthy and credible. Be nice, and make the effort of using consistent URL structures._
+
+Let's come back to the view we wrote earlier with that piece of HTML. Let's be honest, God had no hand in the creation of that abhorrence. It looks ugly, it is not maintainable,
+and just imagine the amount of pain one might have to go through if it was a more complex and bigger piece of HTML code that had to be edited manually as the unholy
+Python string that it is right now, should you ever have to change anything about it. And what would we do if we'd have to insert dynamic content? There has to be a better way.
+
+### Templates to the rescue!
+Django lets you write your HTML code with the possibility of inserting dynamic content, and then
+reference these files from within the views. These are called templates. They extend regular HTML with so-called template tags, that help
+you insert your dynamic content defined as regular Python variables. On this most auspicious of occasions, we can
+also dive into what a request object contains that the view receives.
+Let's add the following code to `demo/urls.py`:
+
+```python
+from django.shortcuts import render
+... # the earlier views & imports
+
+def inspect_request(request):
+    return render(request, 'demo/index.html', context=dict(request=request))
+```
+then import and add this to the urlpatterns list of `demo/urls.py`:
+
+```python
+path('inspect/', inspect_request, name='inspect_request'),
+```
+Add a `demo` folder to `templates` and add the `index.html` file with the following content:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Proper Index page</title>
+</head>
+<body>
+<h1>Hello, code runner</h1>
+<div>
+    {% if request.COOKIES %}
+        <h2>I received some cookies</h2>
+    {% else %}
+        <h2> No cookies :(</h2>
+    {% endif %}
+</div>
+<div>
+    <h3>Path: <em>{{ request.path }}</em></h3>
+    <h3>HTTP method: <em>{{ request.method }}</em></h3>
+    <h3>Content-type: <em>{{ request.content_type }}</em></h3>
+</div>
+<div>
+    <h3>Request params</h3>
+    <ul>
+        {% for param,value in request.GET.items %}
+            <li>Param name: <b>{{ param }}</b> and Value: <b>{{ value }}</b></li>
+        {% endfor %}
+    </ul>
+</div>
+
+</body>
+</html>
+```
+The content between the squiggles `{{ }}` is dynamic, while between `{% %}` you can add
+control statements like ifs and fors, so that you can add dynamic content according to your needs. All these are
+passed through the `context` parameter of the rendered view.
+Access your website like http://127.0.0.1:8000/demo/inspect/?a=something&b=yesss and see how the
+URL parameters show up.
